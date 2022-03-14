@@ -8,7 +8,6 @@
 class Setting
 {
 public:
-	std::string ParamName;		// Parameter Name
 	std::string ParamDescr;		// Parameter Description
 	unsigned int Value;			// Current Value
 	unsigned int Default;		// Default Value
@@ -16,24 +15,27 @@ public:
 	unsigned int Max;			// Maximal Value
 
 	Setting();
-	Setting(std::string ParName, std::string ParDescr, unsigned int Val, unsigned int DefVal, unsigned int MinVal, unsigned int MaxVal);
+	Setting(std::string ParDescr, unsigned int Val, unsigned int DefVal, unsigned int MinVal, unsigned int MaxVal);
 	bool CheckNSet(unsigned int NewVal);
 	void SetDefaultSetting();
 };
 
 class Settings
 {
+
+private:
+
 	std::string SettingsFileName = "Settings\\Settings.txt";
+
+	bool ApplySettings(std::map<std::string, unsigned int>);
 
 public:
 
-	Setting WindowWidth = Setting("WindowWidth", "Program Window Width", 0, 1280, 600, 1920);		// Program window width;
-	Setting WindowHeight = Setting("WindowHeight", "Program Window Height", 0, 720, 400, 1080);		// Program window heigth;
+	std::map<std::string, Setting> SettingsMap;
 
 	Settings();
 
 	bool ReadSettingsFile();
-	bool ApplySettings(std::map<std::string, unsigned int>);
 	void SetDefaultSettings();
 	void WriteDefaultSettingsFile();
 };

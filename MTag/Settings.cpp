@@ -2,7 +2,6 @@
 
 Setting::Setting()
 {
-	ParamName = "";
 	ParamDescr = "";
 	Value = 0;
 	Default = 0;
@@ -10,9 +9,8 @@ Setting::Setting()
 	Max = 0;
 }
 
-Setting::Setting(std::string ParName, std::string ParDescr, unsigned int Val, unsigned int DefVal, unsigned int MinVal, unsigned int MaxVal)
+Setting::Setting(std::string ParDescr, unsigned int Val, unsigned int DefVal, unsigned int MinVal, unsigned int MaxVal)
 {
-	ParamName = ParName;
 	ParamDescr = ParDescr;
 	Value = Val;
 	Default = DefVal;
@@ -40,6 +38,9 @@ void Setting::SetDefaultSetting()
 
 Settings::Settings()
 {
+	SettingsMap["WindowWidth"] = Setting("Program Window Width", 0, 1280, 600, 1920);
+	SettingsMap["WindowHeight"] = Setting("Program Window Height", 0, 720, 400, 1080);
+
 	if (!ReadSettingsFile())
 	{
 		SetDefaultSettings();
@@ -49,7 +50,7 @@ Settings::Settings()
 
 bool Settings::ReadSettingsFile()
 {
-	std::map<std::string, unsigned int> SettingsMap;
+	std::map<std::string, unsigned int> NewSettingsMap;
 	if (std::filesystem::exists(SettingsFileName))
 	{
 		std::ifstream SettingsFile(SettingsFileName);
@@ -63,7 +64,7 @@ bool Settings::ReadSettingsFile()
 			{
 				std::stringstream LineStream(Line);
 				LineStream >> TmpN >> Junk >> TmpV;
-				SettingsMap[TmpN] = TmpV;
+				NewSettingsMap[TmpN] = TmpV;
 				TmpN = "";
 				Junk = "";
 				TmpV = 0;
@@ -71,7 +72,7 @@ bool Settings::ReadSettingsFile()
 
 			SettingsFile.close();
 
-			if (!ApplySettings(SettingsMap))
+			if (!ApplySettings(NewSettingsMap))
 			{
 				return false;
 			}
@@ -88,12 +89,12 @@ bool Settings::ReadSettingsFile()
 	return true;
 }
 
-bool Settings::ApplySettings(std::map<std::string, unsigned int> SettingsMap)
+bool Settings::ApplySettings(std::map<std::string, unsigned int> NewSettingsMap)
 {
-	if (!WindowWidth.CheckNSet(SettingsMap[WindowWidth.ParamName]))
+	if (!SettingsMap["WindowWidth"].CheckNSet(NewSettingsMap["WindowWidth"]))
 		return false;
 
-	if (!WindowHeight.CheckNSet(SettingsMap[WindowHeight.ParamName]))
+	if (!SettingsMap["WindowHeight"].CheckNSet(NewSettingsMap["WindowHeight"]))
 		return false;
 	
 	return true;
@@ -101,8 +102,10 @@ bool Settings::ApplySettings(std::map<std::string, unsigned int> SettingsMap)
 
 void Settings::SetDefaultSettings()
 {
-	WindowWidth.SetDefaultSetting();
-	WindowHeight.SetDefaultSetting();
+	for (auto& Set : SettingsMap)
+	{
+		Set.second.SetDefaultSetting();
+	}
 }
 
 void Settings::WriteDefaultSettingsFile()
@@ -110,8 +113,10 @@ void Settings::WriteDefaultSettingsFile()
 	std::ofstream SettingsFile(SettingsFileName);
 	if (SettingsFile.is_open())
 	{
-		SettingsFile << WindowWidth.ParamName << " = " << WindowWidth.Default << "\t\t#" << WindowWidth.ParamDescr << std::endl;
-		SettingsFile << WindowHeight.ParamName << " = " << WindowHeight.Default << "\t\t#" << WindowHeight.ParamDescr << std::endl;
+		for (auto& Set : SettingsMap)
+		{
+			SettingsFile << Set.first << " = " << Set.second.Default << "\t\t#" << Set.second.ParamDescr << std::endl;
+		}
 	}
 	else
 	{

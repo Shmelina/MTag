@@ -23,6 +23,7 @@ private:
 	bool            fExit;
 	Graphics*		G;
 	Coordinate      cursor;
+	Coordinate      cursor2;
 
 	string		    positionstring;
 
@@ -39,6 +40,8 @@ public:
 
 	int Init(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow, WNDPROC WndProc);
 	ATOM MyRegisterClass(HINSTANCE hInstance, WNDPROC WndProc);
+
+	bool leftbuttondown = false;
 	
 
 	int MainLoop();

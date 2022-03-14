@@ -21,18 +21,26 @@ int MainWindow::Init(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     // Application Init:
     hInst = hInstance; // Save Instance
 
-    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-        CW_USEDEFAULT, CW_USEDEFAULT, WindowWidth.Value, WindowHeight.Value, nullptr, nullptr, hInstance, nullptr);
-
+    hWnd = CreateWindowW(szWindowClass, szTitle, NULL,
+        CW_USEDEFAULT, CW_USEDEFAULT, SettingsMap["WindowWidth"].Value, SettingsMap["WindowHeight"].Value, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {
         return -1;
     }
 
-    SetMenu(hWnd, NULL);
+    DWORD dwRemove = WS_CAPTION | WS_BORDER | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;     // disabled header properties
 
-    SendMessage(hWnd, CB_SETCURSEL, (WPARAM)2, (LPARAM)0);
+    DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);                                                           // get header properties
+
+    LockWindowUpdate(hWnd);                                                                                     // lock window rendering
+
+    SetWindowLong(hWnd, GWL_STYLE, dwStyle & ~dwRemove);                                                        // <--|
+    SetMenu(hWnd, NULL);                                                                                        // <--+-- disable window header
+
+    LockWindowUpdate(NULL);                                                                                     // unlock window rendering
+
+    //SendMessage(hWnd, CB_SETCURSEL, (WPARAM)2, (LPARAM)0);
 
     G = new Graphics();
     if (!G->Init(hWnd))
@@ -67,8 +75,8 @@ int MainWindow::MainLoop()
             //todraw
             G->BeginDraw();
 
-            G->ClrScr(MainWindowBckg.Value);
-            G->DrawTextM(positionstring, Coordinate(200, 200), Coordinate(200, 200), DebugText.Value);
+            G->ClrScr(ThemeMap["MainWindowBckg"].Value);
+            G->DrawTextM(positionstring, Coordinate(200, 200), Coordinate(200, 200), ThemeMap["DebugText"].Value);
             //UI->render();
 
             G->EndDraw();
@@ -118,6 +126,14 @@ LRESULT MainWindow::ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPARA
     break;
     case WM_LBUTTONUP:
     {
+        leftbuttondown = false;
+        //UI->LButton_handler();
+    }
+    break;
+    case WM_LBUTTONDOWN:
+    {
+        cursor2.Set_Coordinate(LOWORD(lParam), HIWORD(lParam));
+        leftbuttondown = true;
         //UI->LButton_handler();
     }
     break;
@@ -131,6 +147,17 @@ LRESULT MainWindow::ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPARA
     break;
     case WM_MOUSEMOVE:
     {
+        if (leftbuttondown)
+        {
+            int randx = rand() % 400;
+            int randy = rand() % 240;
+            POINT p;
+            GetCursorPos(&p);
+            randx = p.x - cursor2.X;
+            randy = p.y - cursor2.Y;
+            MoveWindow(hWnd, randx, randy, SettingsMap["WindowWidth"].Value, SettingsMap["WindowHeight"].Value, false);
+        }
+
         positionstring = to_string(LOWORD(lParam)) + " " + to_string(HIWORD(lParam));
 
         cursor.Set_Coordinate(LOWORD(lParam), HIWORD(lParam));

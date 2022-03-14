@@ -2,15 +2,13 @@
 
 ColorSetting::ColorSetting()
 {
-	ParamName = "";
 	ParamDescr = "";
 	Value = Color4f(1.0, 1.0, 1.0, 1.0);
 	Default = Color4f(1.0, 1.0, 1.0, 1.0);
 }
 
-ColorSetting::ColorSetting(std::string ParName, std::string ParDescr, Color4f Val, Color4f DefVal)
+ColorSetting::ColorSetting(std::string ParDescr, Color4f Val, Color4f DefVal)
 {
-	ParamName = ParName;
 	ParamDescr = ParDescr;
 	Value = Val;
 	Default = DefVal;
@@ -28,7 +26,7 @@ bool ColorSetting::Set(std::string NewVal)
 		Green = (ValueS & 0x00ff0000) >> 16;
 		Blue = (ValueS & 0x0000ff00) >> 8;
 		Alpha = (ValueS & 0x000000ff);
-		Value = Color4f(((float)Red) / 255.0, ((float)Green) / 255.0, ((float)Blue) / 255.0, ((float)Alpha) / 255.0);
+		Value = Color4f(((float)Red) / 255.0f, ((float)Green) / 255.0f, ((float)Blue) / 255.0f, ((float)Alpha) / 255.0f);
 		return true;
 	}
 	catch(exception e)
@@ -59,6 +57,10 @@ string ColorSetting::GetValS()
 
 Theme::Theme()
 {
+	ThemeMap["MainWindowBckg"] = ColorSetting("Main Window Background color", Color4f(1.0, 1.0, 1.0, 1.0), Color4f(1.0, 1.0, 1.0, 1.0));
+	ThemeMap["MainText"] = ColorSetting("Main Text color", Color4f(0.0, 0.0, 0.0, 1.0), Color4f(0.0, 0.0, 0.0, 1.0));
+	ThemeMap["DebugText"] = ColorSetting("Debug Text color", Color4f(1.0, 0.0, 0.0, 1.0), Color4f(1.0, 0.0, 0.0, 1.0));
+
 	if (!ReadThemeFile())
 	{
 		SetDefaultTheme();
@@ -68,7 +70,7 @@ Theme::Theme()
 
 bool Theme::ReadThemeFile()
 {
-	std::map<std::string, string> ThemeMap;
+	std::map<std::string, string> NewThemeMap;
 	if (std::filesystem::exists(ThemeSettingFileName))
 	{
 		std::ifstream ThemeFile(ThemeSettingFileName);
@@ -82,7 +84,7 @@ bool Theme::ReadThemeFile()
 			{
 				std::stringstream LineStream(Line);
 				LineStream >> TmpN >> Junk >> TmpV;
-				ThemeMap[TmpN] = TmpV;
+				NewThemeMap[TmpN] = TmpV;
 				TmpN = "";
 				Junk = "";
 				TmpV = "";
@@ -90,7 +92,7 @@ bool Theme::ReadThemeFile()
 
 			ThemeFile.close();
 
-			if (!ApplyTheme(ThemeMap))
+			if (!ApplyTheme(NewThemeMap))
 			{
 				return false;
 			}
@@ -107,13 +109,13 @@ bool Theme::ReadThemeFile()
 	return true;
 }
 
-bool Theme::ApplyTheme(std::map<std::string, std::string> ThemeMap)
+bool Theme::ApplyTheme(std::map<std::string, std::string> NewThemeMap)
 {
-	if (!MainWindowBckg.Set(ThemeMap[MainWindowBckg.ParamName]))
+	if (!ThemeMap["MainWindowBckg"].Set(NewThemeMap["MainWindowBckg"]))
 		return false;
-	if (!MainText.Set(ThemeMap[MainText.ParamName]))
+	if (!ThemeMap["MainText"].Set(NewThemeMap["MainText"]))
 		return false;
-	if (!DebugText.Set(ThemeMap[DebugText.ParamName]))
+	if (!ThemeMap["DebugText"].Set(NewThemeMap["DebugText"]))
 		return false;
 
 	return true;
@@ -121,9 +123,10 @@ bool Theme::ApplyTheme(std::map<std::string, std::string> ThemeMap)
 
 void Theme::SetDefaultTheme()
 {
-	MainWindowBckg.SetDefault();
-	MainText.SetDefault();
-	DebugText.SetDefault();
+	for (auto& Set : ThemeMap)
+	{
+		Set.second.SetDefault();
+	}
 }
 
 void Theme::WriteDefaultThemeFile()
@@ -131,9 +134,10 @@ void Theme::WriteDefaultThemeFile()
 	std::ofstream SettingsFile(ThemeSettingFileName);
 	if (SettingsFile.is_open())
 	{
-		SettingsFile << MainWindowBckg.ParamName << " = " << MainWindowBckg.GetDefS() << "\t\t#" << MainWindowBckg.ParamDescr << std::endl;
-		SettingsFile << MainText.ParamName << " = " << MainText.GetDefS() << "\t\t#" << MainText.ParamDescr << std::endl;
-		SettingsFile << DebugText.ParamName << " = " << DebugText.GetDefS() << "\t\t#" << DebugText.ParamDescr << std::endl;
+		for (auto& Set : ThemeMap)
+		{
+			SettingsFile << Set.first << " = " << Set.second.GetDefS() << "\t\t#" << Set.second.ParamDescr << std::endl;
+		}
 	}
 	else
 	{
