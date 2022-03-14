@@ -1,0 +1,2 @@
+WindowWidth = 1280		#Program Window Width
+WindowHeight = 720		#Program Window Height

@@ -1,0 +1,3 @@
+MainWindowBckg = ffffffff		#Main Window Background color
+MainText = 000000ff		#Main Text color
+DebugText = ff0000ff		#Debug Text color
