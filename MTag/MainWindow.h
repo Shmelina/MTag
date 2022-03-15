@@ -2,15 +2,15 @@
 #include <atlstr.h>
 #include <algorithm>
 
-#include "Graphics.h"
+#include "Graphics/Graphics.h"
 #include "Menue.h"
 #include "Resource.h"
 #include "Framework.h"
-#include "Locale.h"
-#include "Settings.h"
-#include "Theme.h"
+#include "Settings/Locale.h"
+#include "Settings/Settings.h"
+#include "Settings/Theme.h"
 
-constexpr auto MAX_LOADSTRING = 100;
+constexpr auto MAX_LOADSTRING = 50;
 
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 

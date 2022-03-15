@@ -141,24 +141,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Locale.cpp" />
+    <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="MTag.cpp" />
     <ClCompile Include="Menue.cpp" />
-    <ClCompile Include="Settings.cpp" />
-    <ClCompile Include="Theme.cpp" />
+    <ClCompile Include="Settings\Locale.cpp" />
+    <ClCompile Include="Settings\Settings.cpp" />
+    <ClCompile Include="Settings\Theme.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
-    <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Locale.h" />
+    <ClInclude Include="Graphics\Graphics.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Menue.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Settings.h" />
+    <ClInclude Include="Settings\Locale.h" />
+    <ClInclude Include="Settings\Settings.h" />
+    <ClInclude Include="Settings\Theme.h" />
     <ClInclude Include="Targetver.h" />
-    <ClInclude Include="Theme.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="MTAG.ico" />

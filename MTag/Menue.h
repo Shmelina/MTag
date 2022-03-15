@@ -1,6 +1,6 @@
 #pragma once
 #include "framework.h"
-#include "Graphics.h"
+#include "Graphics/Graphics.h"
 
 using namespace std;
 

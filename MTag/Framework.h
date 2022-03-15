@@ -20,10 +20,10 @@
 
 class Path {
 public:
-	const wchar_t* prog = L"C://ProgramData/ID3_Editor";
-	const wchar_t* data = L"C://ProgramData/ID3_Editor/data";
-	const wchar_t* saveddata = L"C://ProgramData/ID3_Editor/data/Track_List.dat";
-	const wchar_t* picture = L"C://ProgramData/ID3_Editor/data/pictures";
-	const wchar_t* music = L"C://ProgramData/ID3_Editor/music";
+	const wchar_t* prog = L"C://ProgramData/MTag";
+	const wchar_t* data = L"C://ProgramData/MTag/data";
+	const wchar_t* saveddata = L"C://ProgramData/MTag/data/Track_List.dat";
+	const wchar_t* picture = L"C://ProgramData/MTag/data/pictures";
+	const wchar_t* music = L"C://ProgramData/MTag/music";
 	Path() {};
 };

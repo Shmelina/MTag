@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics.h"
+#include "../Graphics/Graphics.h"
 #include <fstream>
 #include <filesystem>
 #include <map>

@@ -9,8 +9,8 @@
 #define IDD_ABOUTBOX			103
 #define IDM_ABOUT				104
 #define IDM_EXIT				105
-#define IDI_MTAG				107
-#define IDI_SMALL				108
+#define IDI_MTAG				107		// Main ICO
+#define IDI_SMALL				108		// Small ICO
 #define IDC_MTAG				109
 #define IDC_MYICON				2
 #ifndef IDC_STATIC
